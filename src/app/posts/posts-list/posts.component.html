@@ -1,0 +1,43 @@
+<h2>Posts</h2>
+<div class="row">
+  <div class="col-md-6">
+    <select
+      #usersDdl
+      (change)="reloadPosts({userId: usersDdl.value})"
+      class="form-control">
+      <option value="">Select a user...</option>
+      <option
+        *ngFor="let user of users"
+        value="{{user.id}}">
+        {{user.name}}
+      </option>
+    </select>
+    <br/>
+    <app-spinner [visible]="!arePostsLoaded"></app-spinner>
+    <app-pagination
+      [items]="posts"
+      [page-size]="pageSize"
+      (page-changed)="onPageChanged($event)">
+    </app-pagination>
+    <ul class="list-group posts">
+      <li *ngFor="let post of pagedPosts" class="list-group-item" (click)="getPostDetails(post)"
+        [class.active]="post.id == currentPost.id">
+        {{ post.title }}
+      </li>
+    </ul>
+  </div>
+  <div class="col-md-6">
+    <div class="card" *ngIf="currentPost.id > 0">
+      <h5 class="card-header">{{currentPost.title}}</h5>
+      <div class="card-body">
+        <p class="card-text">{{currentPost.body}}</p>
+        <hr/>
+        <app-spinner [visible]="!arePostCommentsLoaded"></app-spinner>
+        <app-post-comment
+          *ngFor="let comment of currentPost.comments"
+          [comment]="comment">
+        </app-post-comment>
+      </div>
+    </div>
+  </div>
+</div>
